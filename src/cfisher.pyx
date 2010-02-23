@@ -1,5 +1,7 @@
 # some of this code is originally from the internet. (thanks)
 
+#cython: cdivision=True
+
 cdef extern from "math.h":
     double log(double)
     double exp(double)
@@ -11,7 +13,6 @@ cdef extern from "math.h":
 #   http://www.matforsk.no/ola/fisher.htm 
 cdef inline double lnfactorial(int n):
     return 0 if n < 1 else lngamma(n + 1)
-
 
 cdef inline double lngamma (int z):
     cdef double x = 0.1659470187408462e-06 / (z + 7)
@@ -57,7 +58,7 @@ def pvalue_population(int k, int n, int C, int G):
 # k, n = study_true, study_tot, 
 # C, G = population_true, population_tot
 #def pvalue(int k, int n, int C, int G):
-def pvalue(int a_true, int a_false, int b_true, int b_false):
+cpdef pvalue(int a_true, int a_false, int b_true, int b_false):
     #print "a_true=%i, a_false=%i, b_true=%i, b_false=%i" % (a_true, a_false, b_true, b_false)
 
     # convert the a/b groups to study vs population.
@@ -74,7 +75,7 @@ def pvalue(int a_true, int a_false, int b_true, int b_false):
         return 1.0, 1.0, 1.0
 
     cdef double cutoff = hypergeometric_probability(k, n, C, G)
-    cdef double left_tail = 0, right_tail = 0, two_tailed = 0
+    cdef double left_tail = 0, right_tail = 0, two_tail = 0
     cdef int i
     cdef double p
 
@@ -88,13 +89,13 @@ def pvalue(int a_true, int a_false, int b_true, int b_false):
             right_tail += p
 
         if p <= cutoff:
-            two_tailed += p
+            two_tail += p
 
     left_tail = left_tail if left_tail < 1.0 else 1.0
     right_tail = right_tail if right_tail < 1.0 else 1.0
     two_tail = two_tail if two_tail < 1.0 else 1.0
 
-    return (left_tail, right_tail, two_tailed)
+    return (left_tail, right_tail, two_tail)
 
 
 def test():
