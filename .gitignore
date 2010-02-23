@@ -1,0 +1,5 @@
+fisher/cfisher.so
+build/
+dist/
+*.pyc
+MANIFEST
