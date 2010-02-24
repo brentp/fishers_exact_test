@@ -2,7 +2,7 @@ Fisher's Exact Test
 ===================
 
 Simple, fast implementation of fisher's exact test. Accepts 4 values corresponding
-to the 2*2 contingency table. An object with attributes for left_tail, right_tail, and two_tail p-values
+to the 2*2 contingency table. Returns an object with attributes for left_tail, right_tail, and two_tail p-values
 ::
 
     >>> from fisher import pvalue
