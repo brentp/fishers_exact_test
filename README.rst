@@ -1,8 +1,28 @@
 Fisher's Exact Test
 ===================
 
-Simple, fast implementation of fisher's exact test. Accepts 4 values corresponding
-to the 2*2 contingency table. Returns an object with attributes for left_tail, right_tail, and two_tail p-values
+Simple, fast implementation of `Fisher's exact test <http://en.wikipedia.org/wiki/Fisher's_exact_test>`_. . For example, for the following table:
+
+============  =====================  =========================
+o              Having the property    Not having the property
+============  =====================  =========================
+Selected      12                     5
+Not selected  29                     2
+============  =====================  =========================
+
+Perhaps we are interested in whether there is any difference of property in selected vs. non-selected groups, then we can do the Fisher's exact test.
+
+
+Installation
+============
+within this folder::
+
+    easy_install .
+
+
+Usage
+=====
+``fisher.pvalue()`` accepts 4 values corresponding to the 2-by-2 contingency table, returns an object with attributes for left_tail, right_tail, and two_tail p-values
 ::
 
     >>> from fisher import pvalue
