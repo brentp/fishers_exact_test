@@ -51,16 +51,62 @@ cdef inline int imin2(int a, int b):
 cdef inline int imax2(int a, int b):
     return a if a > b else b
 
+# k, n = study_true, study_tot, 
+# C, G = population_true, population_tot
 def pvalue_population(int k, int n, int C, int G):
     #print "k=%i, n=%i, C=%i, G=%i" % (k, n, C, G)
     return pvalue(k, n - k, C - k, G - C - n + k)
 
-# k, n = study_true, study_tot, 
-# C, G = population_true, population_tot
-#def pvalue(int k, int n, int C, int G):
-cpdef pvalue(int a_true, int a_false, int b_true, int b_false):
-    #print "a_true=%i, a_false=%i, b_true=%i, b_false=%i" % (a_true, a_false, b_true, b_false)
+import numpy as np
+cimport numpy as np
+cimport cython
 
+@cython.boundscheck(False)
+def pvalue_npy(
+       np.ndarray[np.uint_t] a_true,
+       np.ndarray[np.uint_t] a_false,
+       np.ndarray[np.uint_t] b_true,
+       np.ndarray[np.uint_t] b_false):
+
+    cdef int shape = a_true.shape[0],
+    cdef np.ndarray[np.double_t] lefts = np.zeros(shape, dtype=np.double)
+    cdef np.ndarray[np.double_t] rights = np.zeros(shape, dtype=np.double)
+    cdef np.ndarray[np.double_t] twos = np.zeros(shape, dtype=np.double)
+
+    cdef int i
+    cdef double l, r, t
+    cdef PValues p
+    for i in range(shape):
+        p = pvalue(a_true[i], a_false[i], b_true[i], b_false[i])
+        lefts[i]  = p.left_tail
+        rights[i] = p.right_tail
+        twos[i]   = p.two_tail
+    return lefts, rights, twos
+
+
+
+cdef class PValues:
+    cdef readonly double left_tail
+    cdef readonly double right_tail
+    cdef readonly double two_tail
+
+    def __repr__(self):
+        return "Pvalue(left_tail=%.4g, right_tail=%.4g, two_tail=%.4g)" % \
+                    (self.left_tail, self.right_tail, self.two_tail)
+
+cdef inline PValues _factory(double left, double right, double two):
+    cdef PValues instance = PValues.__new__(PValues)
+    instance.left_tail = left
+    instance.right_tail = right
+    instance.two_tail = two
+    return instance
+
+
+
+
+cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
+
+    #print "a_true=%i, a_false=%i, b_true=%i, b_false=%i" % (a_true, a_false, b_true, b_false)
     # convert the a/b groups to study vs population.
     cdef int k = a_true
     cdef int n = a_false + a_true # total in study
@@ -70,9 +116,11 @@ cpdef pvalue(int a_true, int a_false, int b_true, int b_false):
 
     cdef int um = imin2(n, C)
     cdef int lm = imax2(0, n + C - G)
+    cdef PValues pv
 
     if um == lm:
-        return 1.0, 1.0, 1.0
+        pv = _factory(1.0, 1.0, 1.0)
+        return pv
 
     cdef double cutoff = hypergeometric_probability(k, n, C, G)
     cdef double left_tail = 0, right_tail = 0, two_tail = 0
@@ -94,8 +142,8 @@ cpdef pvalue(int a_true, int a_false, int b_true, int b_false):
     left_tail = left_tail if left_tail < 1.0 else 1.0
     right_tail = right_tail if right_tail < 1.0 else 1.0
     two_tail = two_tail if two_tail < 1.0 else 1.0
-
-    return (left_tail, right_tail, two_tail)
+    pv = _factory(left_tail, right_tail, two_tail)
+    return pv
 
 
 def test():
@@ -116,18 +164,27 @@ def test():
 
     
     for table, ab in tablist:
-        left, right, tt = pvalue(table[0][0], table[0][1], table[1][0], table[1][1])
-        print table, tt
-        assert abs(tt - ab[1]) < 0.1, (table, ab, left, right, tt)
+        p = pvalue(table[0][0], table[0][1], table[1][0], table[1][1])
+        print table, p
+        assert abs(p.two_tail - ab[1]) < 0.1, (table, ab, p)
 
 
 def test_speed():
     cdef int i
     import time
     t = time.time()
-    N = 100
+    N = 5000
     for i in range(N):
-        left, right, tt = pvalue(1600, 40, 60, 21040)
+        p = pvalue(160, 40, 60, 404)
     t = time.time() - t
     print "iterations/sec:", float(N)/t
+
+    N = 5
+    a = np.zeros(N, np.uint)
+
+    t = time.time()
+    print pvalue_npy(a + 160, a + 40, a + 60, a + 404)
+    t = time.time() - t
+    print "npy iterations/sec:", float(N)/t
+
 
