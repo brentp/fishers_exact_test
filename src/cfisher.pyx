@@ -94,6 +94,12 @@ cdef class PValues:
         return "Pvalue(left_tail=%.4g, right_tail=%.4g, two_tail=%.4g)" % \
                     (self.left_tail, self.right_tail, self.two_tail)
 
+    # http://docs.cython.org/docs/special_methods.html
+    # < 0 | <= 1 | == 2 | != 3 |  > 4 | >= 5
+    def __richcmp__(PValues self, double other, int op):
+        raise Exception("must compare with one of the attributes"
+                        " not the PValues object") 
+
 cdef inline PValues _factory(double left, double right, double two):
     cdef PValues instance = PValues.__new__(PValues)
     instance.left_tail = left
