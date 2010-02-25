@@ -153,6 +153,9 @@ cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
 
 
 def test():
+    # found these tests on this ticket. (thanks).
+    # http://projects.scipy.org/scipy/ticket/956
+    # these values were taken from R as a means to test the code in that ticket.
     tablist = [
             ([[100, 2], [1000, 5]], (2.505583993422285e-001,  1.300759363430016e-001)),
             ([[2, 100], [5, 1000]], (2.505583993422285e-001,  1.300759363430016e-001)),
