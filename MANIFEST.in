@@ -1,1 +1,2 @@
 include src/cfisher.pyx
+include README.rst
