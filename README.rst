@@ -15,9 +15,17 @@ Perhaps we are interested in whether there is any difference of property in sele
 
 Installation
 ============
-within this folder::
+within this folder ::
 
     easy_install .
+
+from pypi ::
+
+    easy_install fisher
+
+or from github (contributions welcomed) ::
+    
+    git clone git://github.com/brentp/fishers_exact_test.git
 
 
 Usage
