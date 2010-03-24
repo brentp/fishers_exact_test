@@ -122,6 +122,7 @@ cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
 
     cdef int um = imin2(n, C)
     cdef int lm = imax2(0, n + C - G)
+    cdef double epsilon = 1e-10
     cdef PValues pv
 
     if um == lm:
@@ -142,7 +143,7 @@ cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
         if i >= k:
             right_tail += p
 
-        if p <= cutoff:
+        if p < cutoff + epsilon:
             two_tail += p
 
     left_tail = left_tail if left_tail < 1.0 else 1.0
