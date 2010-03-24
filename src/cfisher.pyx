@@ -189,10 +189,9 @@ def test_speed():
     t = time.time() - t
     print "iterations/sec:", float(N)/t
 
+    t = time.time()
     N = 5
     a = np.zeros(N, np.uint)
-
-    t = time.time()
     print pvalue_npy(a + 160, a + 40, a + 60, a + 404)
     t = time.time() - t
     print "npy iterations/sec:", float(N)/t
