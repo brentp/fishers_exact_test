@@ -39,3 +39,16 @@ Usage
     >>> p.left_tail, p.right_tail, p.two_tail
     (0.044554737835078267, 0.99452520602190897, 0.08026855207410688)
 
+Benchmark
+=========
+A simple benchmark that calls the Fisher's exact test 1000 times (in ``scripts/rfisher.py``)::
+
+    calling python fisher...
+    iterations/sec: 3000.62526381
+    calling rpy fisher...
+    iterations/sec: 289.225902364
+    calling R directly...
+    iterations/sec: 244.36542276
+
+So the cython fisher is up to 10 times faster than rpy or R version.
+
