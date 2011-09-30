@@ -1,4 +1,18 @@
-# some of this code is originally from the internet. (thanks)
+"""
+Cython Fisher's exact test:
+Fisher's exact test is a statistical significance test used in the
+analysis of contingency tables where sample sizes are small.
+
+Function lngamma(), lncombination(), hypergeometric_probability(),
+were originally written by Oyvind Langsrud:
+
+Oyvind Langsrud
+Copyright (C) : All right reserved.
+Contact Oyvind Langsrud for permission.
+
+Adapted to Cython version by:
+Haibao Tang, Brent Pedersen
+"""
 
 #cython: cdivision=True
 
@@ -10,7 +24,7 @@ cdef extern from "math.h":
 # Reference:
 #   Lanczos, C. 'A precision approximation of the gamma function',
 #   J. SIAM Numer. Anal., B, 1, 86-96, 1964."
-#   http://www.matforsk.no/ola/fisher.htm 
+#   http://www.matforsk.no/ola/fisher.htm
 cdef inline double lnfactorial(int n):
     return 0 if n < 1 else lngamma(n + 1)
 
@@ -51,7 +65,7 @@ cdef inline int imin2(int a, int b):
 cdef inline int imax2(int a, int b):
     return a if a > b else b
 
-# k, n = study_true, study_tot, 
+# k, n = study_true, study_tot,
 # C, G = population_true, population_tot
 def pvalue_population(int k, int n, int C, int G):
     #print "k=%i, n=%i, C=%i, G=%i" % (k, n, C, G)
@@ -98,7 +112,7 @@ cdef class PValues:
     # < 0 | <= 1 | == 2 | != 3 |  > 4 | >= 5
     def __richcmp__(PValues self, double other, int op):
         raise Exception("must compare with one of the attributes"
-                        " not the PValues object") 
+                        " not the PValues object")
 
 cdef inline PValues _factory(double left, double right, double two):
     cdef PValues instance = PValues.__new__(PValues)
@@ -172,7 +186,7 @@ def test():
             ([[0, 1], [3, 2]], (0.000000000000000e+000,  1.000000000000000e+000))
             ]
 
-    
+
     for table, ab in tablist:
         p = pvalue(table[0][0], table[0][1], table[1][0], table[1][1])
         print table, p
