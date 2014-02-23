@@ -78,5 +78,5 @@ if __name__ == "__main__":
     # For the test, remove the first newline and all common leading whitespace
     from textwrap import dedent
     str_table = "".join(str_table.splitlines(True)[1:])
-    print s
+    print(s)
     assert dedent(str_table) == s
