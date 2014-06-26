@@ -36,14 +36,14 @@ def rfisher(a, b, c, d):
 def test_rfisher(func):
     for table, ab in tablist:
         p = func(table[0][0], table[0][1], table[1][0], table[1][1])
-        print table, p
+        print(table, p)
         assert abs(p - ab[1]) < 0.1, (table, ab, p)
 
 
 def test_fisher(func):
     for table, ab in tablist:
         p = func(table[0][0], table[0][1], table[1][0], table[1][1])
-        print table, p
+        print(table, p)
         assert abs(p.two_tail - ab[1]) < 0.1, (table, ab, p)
 
 def test_speed(f):
@@ -52,7 +52,7 @@ def test_speed(f):
         t = time.time()
         f(*args, **kwargs)
         t = time.time() - t
-        print >>sys.stderr, "iterations/sec:", float(N)/t
+        print("iterations/sec:", float(N)/t, file=sys.stderr)
     return timed_f
     
 @test_speed
@@ -71,16 +71,16 @@ def test_r_speed():
 
 if __name__ == '__main__':
     import sys
-    print >>sys.stderr, "calling python fisher..."
+    print("calling python fisher...", file=sys.stderr)
     func = fisher.pvalue
     test_fisher(func)
     test_fisher_speed(func)
 
-    print >>sys.stderr, "calling rpy fisher..."
+    print("calling rpy fisher...", file=sys.stderr)
     func = rfisher
     test_rfisher(func)
     test_fisher_speed(func)
 
-    print >>sys.stderr, "calling R directly..."
+    print("calling R directly...", file=sys.stderr)
     test_r_speed()
 
