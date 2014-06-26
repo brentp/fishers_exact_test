@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+from __future__ import print_function
 
 # compare head-on between brentp's fisher and R's fisher 
 
