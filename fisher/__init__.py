@@ -1,1 +1,1 @@
-from cfisher import *
+from .cfisher import *

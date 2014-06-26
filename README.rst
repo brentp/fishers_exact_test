@@ -36,8 +36,8 @@ Usage
     >>> from fisher import pvalue
     >>> mat = [[12, 5], [29, 2]]
     >>> p = pvalue(12, 5, 29, 2)
-    >>> p.left_tail, p.right_tail, p.two_tail
-    (0.044554737835078267, 0.99452520602190897, 0.08026855207410688)
+    >>> p.left_tail, p.right_tail, p.two_tail  # doctest: +NORMALIZE_WHITESPACE, +ELLIPSIS
+    (0.04455473783507..., 0.994525206021..., 0.0802685520741...)
 
 Benchmark
 =========

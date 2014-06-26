@@ -136,7 +136,7 @@ cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
 
     cdef int um = imin2(n, C)
     cdef int lm = imax2(0, n + C - G)
-    cdef double epsilon = 1e-10
+    cdef double epsilon = 1e-40
     cdef PValues pv
 
     if um == lm:
