@@ -2,7 +2,7 @@ from distutils.core import setup, Extension
 import numpy as np
 #from Cython.Distutils import build_ext
 
-version = '0.1.2'
+version = '0.1.5'
 
 doc = open('README.rst').read()
 cfisher_ext = Extension('fisher/cfisher', ['src/cfisher.c'], include_dirs=[np.get_include()])
@@ -28,5 +28,7 @@ setup(name='fisher',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Scientific/Engineering',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3'
       ],
 )
