@@ -5,7 +5,10 @@ import numpy as np
 version = '0.1.5'
 
 doc = open('README.rst').read()
-cfisher_ext = Extension('fisher.cfisher', ['src/cfisher.c'], include_dirs=[np.get_include()])
+cfisher_ext = Extension('fisher.cfisher',
+                        ['src/cfisher.c'],
+                        extra_compile_args=["-O3"],
+                        include_dirs=[np.get_include()])
 
 
 setup(name='fisher',

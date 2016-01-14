@@ -24,7 +24,7 @@ from pypi ::
     easy_install fisher
 
 or from github (contributions welcomed) ::
-    
+
     git clone git://github.com/brentp/fishers_exact_test.git
 
 
@@ -51,4 +51,3 @@ A simple benchmark that calls the Fisher's exact test 1000 times (in ``scripts/r
     iterations/sec: 244.36542276
 
 So the cython fisher is up to 10 times faster than rpy or R version.
-
