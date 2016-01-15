@@ -1,6 +1,9 @@
 Fisher's Exact Test
 ===================
 
+.. image:: https://travis-ci.org/brentp/fishers_exact_test.svg?branch=master
+    :target: https://travis-ci.org/brentp/fishers_exact_test
+
 Simple, fast implementation of `Fisher's exact test <http://en.wikipedia.org/wiki/Fisher's_exact_test>`_. . For example, for the following table:
 
 ============  =====================  =========================
