@@ -1,17 +1,17 @@
-from distutils.core import setup, Extension
-import numpy as np
-#from Cython.Distutils import build_ext
+import sys
+from setuptools import setup
+from setuptools.extension import Extension
 
 version = '0.1.5'
 
 doc = open('README.rst').read()
 cfisher_ext = Extension('fisher.cfisher',
                         ['src/cfisher.c'],
-                        extra_compile_args=["-O3"],
-                        include_dirs=[np.get_include()])
+                        extra_compile_args=["-O3"])
 
 
-setup(name='fisher',
+setup_options = dict(
+      name='fisher',
       version=version,
       description="Fast Fisher's Exact Test",
       url = 'http://github.com/brentp/fishers_exact_test',
@@ -19,7 +19,7 @@ setup(name='fisher',
       author="haibao tang, brent pedersen",
       author_email="bpederse@gmail.com",
       ext_modules=[ cfisher_ext ],
-      requires=['numpy'],
+      install_requires=['numpy'],
       keywords='statistics cython',
       license='BSD',
       packages=['fisher'],
@@ -35,3 +35,13 @@ setup(name='fisher',
         'Programming Language :: Python :: 3'
       ],
 )
+
+# For these actions, NumPy is not required. We want them to succeed without,
+# for example when pip is used to install seqlearn without NumPy present.
+NO_NUMPY_ACTIONS = ('--help-commands', 'egg_info', '--version', 'clean')
+if not ('--help' in sys.argv[1:]
+        or len(sys.argv) > 1 and sys.argv[1] in NO_NUMPY_ACTIONS):
+    import numpy
+    setup_options['include_dirs'] = [numpy.get_include()]
+
+setup(**setup_options)
