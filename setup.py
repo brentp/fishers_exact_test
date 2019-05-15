@@ -2,7 +2,8 @@ version = '0.1.5'
 import sys
 # from setuptools import setup
 # from setuptools.extension import Extension
-from distutils.core import setup
+from setuptools import setup
+# from distutils.core import setup
 from distutils.extension import Extension
 from distutils.command.bdist import bdist
 from distutils.command.build_ext import build_ext
