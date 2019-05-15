@@ -1,7 +1,10 @@
 version = '0.1.5'
 import sys
-from setuptools import setup
-from setuptools.extension import Extension
+# from setuptools import setup
+# from setuptools.extension import Extension
+from distutils.core import setup
+from distutils.extension import Extension
+import setuptools
 #from Cython.Distutils import build_ext
 from setuptools.command.build_ext import build_ext
 
