@@ -2,7 +2,8 @@ version = '0.1.5'
 import sys
 from setuptools import setup
 from setuptools.extension import Extension
-from Cython.Distutils import build_ext
+#from Cython.Distutils import build_ext
+from setuptools.command.build_ext import build_ext
 
 class CustomBuildExtCommand(build_ext):
     """build_ext command for use when numpy headers are needed.
