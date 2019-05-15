@@ -5,7 +5,10 @@ from setuptools.extension import Extension
 from Cython.Distutils import build_ext
 
 class CustomBuildExtCommand(build_ext):
-    """build_ext command for use when numpy headers are needed."""
+    """build_ext command for use when numpy headers are needed.
+    
+    https://stackoverflow.com/a/42163080/8083313
+"""
     def run(self):
 
         # Import numpy here, only when headers are needed
