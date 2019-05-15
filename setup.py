@@ -1,18 +1,10 @@
 version = '0.1.5'
 import sys
-# from setuptools import setup
-# from setuptools.extension import Extension
-from setuptools import setup
-# from distutils.core import setup
-from distutils.extension import Extension
-from distutils.command.bdist import bdist
-from distutils.command.build_ext import build_ext
-# import setuptools
 
-#from Cython.Distutils import build_ext
-# from setuptools.command.build_ext import build_ext
-# from setuptools.command. import bdist_wheel
-_bdist = bdist
+from setuptools import setup
+from setuptools.extension import Extension
+from setuptools.command.build_ext import build_ext
+
 class _build_ext(build_ext):
     """build_ext command for use when numpy headers are needed.
     
@@ -46,7 +38,7 @@ setup_options = dict(
       author="haibao tang, brent pedersen",
       author_email="bpederse@gmail.com",
       ext_modules=[ cfisher_ext ],
-      cmdclass = {'bdist': _bdist,'build_ext':_build_ext},
+      cmdclass = {'build_ext':_build_ext},
 #       install_requires=['numpy'],
       setup_requires=['numpy'],
       keywords='statistics cython',
