@@ -47,6 +47,7 @@ setup_options = dict(
       ext_modules=[ cfisher_ext ],
       cmdclass = {'bdist': _bdist,'build_ext':_build_ext},
       install_requires=['numpy'],
+      setup_requires=['numpy'],
       keywords='statistics cython',
       license='BSD',
       packages=['fisher'],
