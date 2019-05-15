@@ -1,8 +1,23 @@
+version = '0.1.5'
 import sys
 from setuptools import setup
 from setuptools.extension import Extension
+from Cython.Distutils import build_ext
 
-version = '0.1.5'
+class CustomBuildExtCommand(build_ext):
+    """build_ext command for use when numpy headers are needed."""
+    def run(self):
+
+        # Import numpy here, only when headers are needed
+        import numpy
+
+        # Add numpy headers to include_dirs
+        self.include_dirs.append(numpy.get_include())
+
+        # Call original build_ext command
+        build_ext.run(self)
+        
+
 
 doc = open('README.rst').read()
 cfisher_ext = Extension('fisher.cfisher',
@@ -19,6 +34,7 @@ setup_options = dict(
       author="haibao tang, brent pedersen",
       author_email="bpederse@gmail.com",
       ext_modules=[ cfisher_ext ],
+      cmdclass = {'build_ext': CustomBuildExtCommand},
       install_requires=['numpy'],
       keywords='statistics cython',
       license='BSD',
