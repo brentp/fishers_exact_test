@@ -6,7 +6,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 from distutils.command.bdist import bdist
 from distutils.command.build_ext import build_ext
-import setuptools
+# import setuptools
 
 #from Cython.Distutils import build_ext
 # from setuptools.command.build_ext import build_ext
