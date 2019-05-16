@@ -1,15 +1,15 @@
-version = '0.1.5'
 import sys
-
 from setuptools import setup
 from setuptools.extension import Extension
 from setuptools.command.build_ext import build_ext
+
+version = '0.1.5'
 
 class _build_ext(build_ext):
     """build_ext command for use when numpy headers are needed.
     
     https://stackoverflow.com/a/42163080/8083313
-"""
+    """
     def run(self):
 
         # Import numpy here, only when headers are needed
