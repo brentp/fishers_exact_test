@@ -11,7 +11,7 @@ cfisher_ext = Extension('fisher.cfisher',
 
 
 setup_options = dict(
-      name='fisher',
+      name='fisher-modified',
       version=version,
       description="Fast Fisher's Exact Test",
       url = 'http://github.com/brentp/fishers_exact_test',
