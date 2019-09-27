@@ -13,28 +13,31 @@ Selected      12                     5
 Not selected  29                     2
 ============  =====================  =========================
 
-Perhaps we are interested in whether there is any difference of property in selected vs. non-selected groups, then we can do the Fisher's exact test.
+Perhaps we are interested in whether there is any difference of property in
+selected vs. non-selected groups, then we can do the Fisher's exact test.
 
 
 Installation
 ============
-within this folder ::
-
-    easy_install .
-
-from pypi ::
-
-    easy_install fisher
-
-or from github (contributions welcomed) ::
+Within this folder ::
 
     git clone git://github.com/brentp/fishers_exact_test.git
+    pip install .
+
+From PyPI ::
+
+    pip install fisher
+
+Or install the development version ::
+
+    pip install git+git://github.com/brentp/fishers_exact_test.git
 
 
 Usage
 =====
-``fisher.pvalue()`` accepts 4 values corresponding to the 2-by-2 contingency table, returns an object with attributes for left_tail, right_tail, and two_tail p-values
-::
+``fisher.pvalue()`` accepts 4 values corresponding to the 2-by-2 contingency
+table, returns an object with attributes for left_tail, right_tail, and
+two_tail p-values ::
 
     >>> from fisher import pvalue
     >>> mat = [[12, 5], [29, 2]]
@@ -44,7 +47,8 @@ Usage
 
 Benchmark
 =========
-A simple benchmark that calls the Fisher's exact test 1000 times (in ``scripts/rfisher.py``)::
+A simple benchmark that calls the Fisher's exact test 1000 times
+(in ``scripts/rfisher.py``)::
 
     calling python fisher...
     iterations/sec: 3000.62526381
