@@ -1,2 +1,4 @@
 include src/cfisher.pyx
 include README.rst
+include versioneer.py
+include fisher/_version.py
