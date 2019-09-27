@@ -24,7 +24,7 @@ class _build_ext(build_ext):
         build_ext.run(self)
 
 
-doc = open("README.rst").read()
+doc = open("README.md").read()
 cfisher_ext = Extension("fisher.cfisher", ["src/cfisher.c"], extra_compile_args=["-O3"])
 cmdclass = {"build_ext": _build_ext}
 cmdclass.update(versioneer.get_cmdclass())
@@ -36,6 +36,7 @@ setup_options = dict(
     description="Fast Fisher's Exact Test",
     url="http://github.com/brentp/fishers_exact_test",
     long_description=doc,
+    long_description_content_type="text/markdown",
     author="Haibao Tang, Brent Pedersen",
     author_email="bpederse@gmail.com",
     ext_modules=[cfisher_ext],
