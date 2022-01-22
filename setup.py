@@ -23,7 +23,7 @@ class _build_ext(build_ext):
 
         # Cythonize the extension (and path the `_needs_stub` attribute,
         # which is not set by Cython but required by `setuptools`)
-        self.extensions = cythonize(self.extensions)
+        self.extensions = cythonize(self.extensions, force=self.force)
         for extension in self.extensions:
             extension._needs_stub = False
 
