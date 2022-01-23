@@ -1,4 +1,4 @@
-fisher/cfisher.so
+fisher/*.so
 build/
 dist/
 *.pyc
