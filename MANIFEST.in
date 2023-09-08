@@ -3,3 +3,4 @@ include README.rst
 include LICENSE
 include versioneer.py
 include fisher/_version.py
+include pyproject.toml
