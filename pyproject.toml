@@ -1,4 +1,4 @@
 [build-system]
-requires = ["setuptools", "cython", "numpy"]
+requires = ["setuptools", "cython", "numpy", "versioneer"]
 build-backend = "setuptools.build_meta"
 
