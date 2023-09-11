@@ -1,6 +1,6 @@
 # Fisher\'s Exact Test
 
-[![image](https://travis-ci.org/brentp/fishers_exact_test.svg?branch=master)](https://travis-ci.org/brentp/fishers_exact_test)
+[![Package](https://github.com/brentp/fishers_exact_test/actions/workflows/package.yml/badge.svg)](https://github.com/brentp/fishers_exact_test/actions/workflows/package.yml)
 [![image](https://img.shields.io/pypi/v/fisher.svg)](https://pypi.org/project/fisher)
 
 Simple, fast implementation of [Fisher\'s exact
