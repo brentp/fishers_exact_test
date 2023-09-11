@@ -22,6 +22,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: true
+        fetch-depth: 0
     - name: Set up QEMU
       id: qemu
       uses: docker/setup-qemu-action@v2
@@ -58,6 +59,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: true
+        fetch-depth: 0
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
@@ -69,6 +71,7 @@ jobs:
         CIBW_BUILD: ${{ matrix.python-tag }}
         CIBW_BEFORE_BUILD: pip install cython
         CIBW_BUILD_VERBOSITY: 2
+        CIBW_BEFORE_TEST: "git status"
         CIBW_TEST_COMMAND: python -m unittest fisher -vv
         CIBW_TEST_REQUIRES: importlib-resources
       with:
@@ -93,6 +96,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: true
+        fetch-depth: 0
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
@@ -126,6 +130,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
+        fetch-depth: 0
         submodules: true
     - uses: actions-rs/toolchain@v1
       with:
@@ -163,6 +168,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: true
+        fetch-depth: 0
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
@@ -190,6 +196,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: true
+        fetch-depth: 0
     - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
