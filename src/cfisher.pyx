@@ -26,6 +26,8 @@ cdef extern from "math.h":
     double exp(double) nogil
     double lgamma(double) nogil
 
+# Setup Numpy C-API
+np.import_array()
 
 cdef inline double _naive_lnfactorial(int n) nogil:
     cdef double acc = 0.0
