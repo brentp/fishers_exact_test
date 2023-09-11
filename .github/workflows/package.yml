@@ -222,7 +222,7 @@ jobs:
     - name: Update pip to latest version
       run: python -m pip install -U pip setuptools wheel
     - name: Install built wheel
-      run: python -m pip install --no-binary fisher --find-links=dist fisher
+      run: python -m pip install --pre --no-binary fisher --find-links=dist fisher
     - name: Run tests without coverage
       run: python -m unittest fisher -vv
 
