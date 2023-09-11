@@ -1,10 +1,11 @@
 import sys
 
+import numpy
 import versioneer
+from Cython.Build import cythonize
 from setuptools import setup
 from setuptools.command.build_ext import build_ext
 from setuptools.extension import Extension
-
 
 class _build_ext(build_ext):
     """build_ext command for use when numpy and Cython are needed.
@@ -14,13 +15,6 @@ class _build_ext(build_ext):
     """
 
     def run(self):
-        # Only resolve imports when they are absolutely needed
-        import numpy
-        from Cython.Build import cythonize
-
-        # Add numpy headers to include_dirs
-        self.include_dirs.append(numpy.get_include())
-
         # Cythonize the extension (and path the `_needs_stub` attribute,
         # which is not set by Cython but required by `setuptools`)
         self.extensions = cythonize(self.extensions, force=self.force)
@@ -32,10 +26,14 @@ class _build_ext(build_ext):
 
 
 doc = open("README.md").read()
-cfisher_ext = Extension("fisher.cfisher", ["src/cfisher.pyx"], extra_compile_args=["-O3"])
+cfisher_ext = Extension(
+    "fisher.cfisher", 
+    ["src/cfisher.pyx"], 
+    extra_compile_args=["-O3"],
+    include_dirs=[numpy.get_include()],
+)
 cmdclass = {"build_ext": _build_ext}
 cmdclass.update(versioneer.get_cmdclass())
-
 
 setup_options = dict(
     name="fisher",
