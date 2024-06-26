@@ -126,10 +126,10 @@ def pvalue_population(int k, int n, int K, int N):
 
 @cython.boundscheck(False)
 def pvalue_npy(
-       np.ndarray[np.uint_t] a_true,
-       np.ndarray[np.uint_t] a_false,
-       np.ndarray[np.uint_t] b_true,
-       np.ndarray[np.uint_t] b_false):
+       np.ndarray[np.uint32_t] a_true,
+       np.ndarray[np.uint32_t] a_false,
+       np.ndarray[np.uint32_t] b_true,
+       np.ndarray[np.uint32_t] b_false):
 
     cdef int shape = a_true.shape[0],
     cdef np.ndarray[np.double_t] lefts = np.zeros(shape, dtype=np.double)
