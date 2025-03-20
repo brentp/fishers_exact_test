@@ -9,17 +9,17 @@ jobs:
 
   wheel-linux-aarch64:
     name: Build Linux wheels (Aarch64)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-tag:
-        - cp37-manylinux_aarch64
         - cp38-manylinux_aarch64
         - cp39-manylinux_aarch64
         - cp310-manylinux_aarch64
         - cp311-manylinux_aarch64
+        - cp312-manylinux_aarch64
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
@@ -29,34 +29,34 @@ jobs:
       with:
         platforms: all
     - name: Build manylinux wheels
-      uses: pypa/cibuildwheel@v2.11.3
+      uses: pypa/cibuildwheel@v2.23.1
       env:
         CIBW_ARCHS: aarch64
         CIBW_BUILD: ${{ matrix.python-tag }}
         CIBW_BUILD_VERBOSITY: 2
-        CIBW_BEFORE_BUILD: pip install cython
-        CIBW_TEST_COMMAND: python -m unittest fisher -vv
+        CIBW_BEFORE_BUILD: pip install cython pytest
+        CIBW_TEST_COMMAND: python -c "import fisher"
         CIBW_TEST_REQUIRES: importlib-resources
       with:
         output-dir: dist
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: wheels
+        name: wheels-${{ matrix.python-tag }}
         path: dist/*
 
   wheel-linux-x86_64:
     name: Build Linux wheels (x86-64)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-tag:
-        - cp37-manylinux_x86_64
         - cp38-manylinux_x86_64
         - cp39-manylinux_x86_64
         - cp310-manylinux_x86_64
         - cp311-manylinux_x86_64
+        - cp312-manylinux_x86_64
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
@@ -65,20 +65,20 @@ jobs:
         toolchain: stable
         override: true
     - name: Build manylinux wheels
-      uses: pypa/cibuildwheel@v2.11.3
+      uses: pypa/cibuildwheel@v2.23.1
       env:
         CIBW_ARCHS: x86_64
         CIBW_BUILD: ${{ matrix.python-tag }}
-        CIBW_BEFORE_BUILD: pip install cython
+        CIBW_BEFORE_BUILD: pip install cython pytest
         CIBW_BUILD_VERBOSITY: 2
-        CIBW_BEFORE_TEST: "git status"
-        CIBW_TEST_COMMAND: python -m unittest fisher -vv
+        CIBW_BEFORE_TEST: "git status && ls -lh"
+        CIBW_TEST_COMMAND: python -c "import fisher"
         CIBW_TEST_REQUIRES: importlib-resources
       with:
         output-dir: dist
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: wheels
+        name: wheels-${{ matrix.python-tag }}
         path: dist/*
 
   wheel-macos-x86_64:
@@ -87,13 +87,13 @@ jobs:
     strategy:
       matrix:
         python-tag:
-        - cp37-macosx_x86_64
         - cp38-macosx_x86_64
         - cp39-macosx_x86_64
         - cp310-macosx_x86_64
         - cp311-macosx_x86_64
+        - cp312-macosx_x86_64
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
@@ -102,19 +102,19 @@ jobs:
         toolchain: stable
         override: true
     - name: Build manylinux wheels
-      uses: pypa/cibuildwheel@v2.11.3
+      uses: pypa/cibuildwheel@v2.23.1
       env:
         CIBW_ARCHS: x86_64
         CIBW_BUILD: ${{ matrix.python-tag }}
-        CIBW_BEFORE_BUILD: pip install cython
+        CIBW_BEFORE_BUILD: pip install cython pytest
         CIBW_BUILD_VERBOSITY: 2
-        CIBW_TEST_COMMAND: python -m unittest fisher -vv
+        CIBW_TEST_COMMAND: python -c "import fisher"
         CIBW_TEST_REQUIRES: importlib-resources
       with:
         output-dir: dist
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: wheels
+        name: wheels-${{ matrix.python-tag }}
         path: dist/*
 
   wheel-macos-aarch64:
@@ -127,8 +127,9 @@ jobs:
         - cp39-macosx_arm64
         - cp310-macosx_arm64
         - cp311-macosx_arm64
+        - cp312-macosx_arm64
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         submodules: true
@@ -138,19 +139,19 @@ jobs:
         override: true
         target: aarch64-apple-darwin
     - name: Build manylinux wheels
-      uses: pypa/cibuildwheel@v2.11.3
+      uses: pypa/cibuildwheel@v2.23.1
       env:
         CIBW_ARCHS: arm64
         CIBW_BUILD: ${{ matrix.python-tag }}
-        CIBW_BEFORE_BUILD: pip install cython
+        CIBW_BEFORE_BUILD: pip install cython pytest
         CIBW_BUILD_VERBOSITY: 2
-        CIBW_TEST_COMMAND: python -m unittest fisher -vv
+        CIBW_TEST_COMMAND: python -c "import fisher"
         CIBW_TEST_REQUIRES: importlib-resources
       with:
         output-dir: dist
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: wheels
+        name: wheels-${{ matrix.python-tag }}
         path: dist/*
 
   wheel-win32-x86_64:
@@ -159,13 +160,13 @@ jobs:
     strategy:
       matrix:
         python-tag:
-        - cp37-win_amd64
         - cp38-win_amd64
         - cp39-win_amd64
         - cp310-win_amd64
         - cp311-win_amd64
+        - cp312-win_amd64
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
@@ -174,41 +175,41 @@ jobs:
         toolchain: stable
         override: true
     - name: Build manylinux wheels
-      uses: pypa/cibuildwheel@v2.11.3
+      uses: pypa/cibuildwheel@v2.23.1
       env:
         CIBW_ARCHS: AMD64
         CIBW_BUILD: ${{ matrix.python-tag }}
-        CIBW_BEFORE_BUILD: pip install cython
+        CIBW_BEFORE_BUILD: pip install cython pytest
         CIBW_BUILD_VERBOSITY: 2
-        CIBW_TEST_COMMAND: python -m unittest fisher -vv
+        CIBW_TEST_COMMAND: python -c "import fisher"
         CIBW_TEST_REQUIRES: importlib-resources
       with:
         output-dir: dist
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
-        name: wheels
+        name: wheels-${{ matrix.python-tag }}
         path: dist/*
 
   sdist:
     runs-on: ubuntu-latest
     name: Build source distribution
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.11
+        python-version: 3.12
     - name: Install build requirements
-      run: python -m pip install -r ./requirements.txt
+      run: python -m pip install -r ./requirements.txt setuptools
     - name: Build source distribution
       run: python setup.py sdist
     - name: Store built source distribution
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: wheels
+        name: wheels-${{ matrix.python-tag }}
         path: dist/*
 
   test-sdist:
@@ -217,21 +218,23 @@ jobs:
     needs:
     - sdist
     steps:
-    - name: Setup Python 3.11
-      uses: actions/setup-python@v4
+    - name: Setup Python 3.12
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
     - name: Download built wheels
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
-          name: wheels
+          name: wheels-${{ matrix.python-tag }}
           path: dist/
     - name: Update pip to latest version
-      run: python -m pip install -U pip setuptools wheel
+      run: python -m pip install -U pip setuptools wheel pytest
     - name: Install built wheel
       run: python -m pip install --pre --no-binary fisher --find-links=dist fisher
+    - name: Extract for tests
+      run: tar xzvf dist/*.tar.gz && ls -lh && cp fisher-*/tests.py . && rm -r fisher-*
     - name: Run tests without coverage
-      run: python -m unittest fisher -vv
+      run: py.test tests.py
 
   upload:
     environment: PyPI
@@ -246,7 +249,7 @@ jobs:
     - wheel-macos-x86_64
     - wheel-win32-x86_64
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: wheels
         path: dist
