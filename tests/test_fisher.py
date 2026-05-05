@@ -163,18 +163,19 @@ class TestPvaluePopulation:
 class TestPvalueNpy:
     def test_matches_scalar_pvalue(self):
         """Vectorized results must match scalar pvalue for each row."""
-        tables = [t for t, _ in R_VALIDATED_CASES]
-        a = np.array([t[0][0] for t in tables], dtype=np.uint32)
-        b = np.array([t[0][1] for t in tables], dtype=np.uint32)
-        c = np.array([t[1][0] for t in tables], dtype=np.uint32)
-        d = np.array([t[1][1] for t in tables], dtype=np.uint32)
+        tables = np.array([t for t, _ in R_VALIDATED_CASES], dtype=np.uint32)
+        a, b = tables[:, 0, 0], tables[:, 0, 1]
+        c, d = tables[:, 1, 0], tables[:, 1, 1]
+
+        expected_lefts = np.array([e[0] for _, e in R_VALIDATED_CASES])
+        expected_rights = np.array([e[1] for _, e in R_VALIDATED_CASES])
+        expected_twos = np.array([e[2] for _, e in R_VALIDATED_CASES])
 
         lefts, rights, twos = pvalue_npy(a, b, c, d)
 
-        for i, (table, expected) in enumerate(R_VALIDATED_CASES):
-            assert abs(lefts[i] - expected[0]) < EPSILON, f"left_tail mismatch at index {i}"
-            assert abs(rights[i] - expected[1]) < EPSILON, f"right_tail mismatch at index {i}"
-            assert abs(twos[i] - expected[2]) < EPSILON, f"two_tail mismatch at index {i}"
+        np.testing.assert_allclose(lefts, expected_lefts, atol=EPSILON)
+        np.testing.assert_allclose(rights, expected_rights, atol=EPSILON)
+        np.testing.assert_allclose(twos, expected_twos, atol=EPSILON)
 
     def test_returns_correct_length(self):
         """Output arrays should have the same length as input."""
