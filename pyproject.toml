@@ -1,6 +1,6 @@
 [project]
 name = "fisher"
-version = "0.0.0"
+dynamic = ["version"]
 description = "Fast Fisher's Exact Test"
 readme = "README.md"
 license = "BSD-3-Clause"
@@ -11,13 +11,31 @@ authors = [
 ]
 keywords = ["statistics", "cython"]
 dependencies = ["numpy"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+]
+
+[project.urls]
+Homepage = "http://github.com/brentp/fishers_exact_test"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.5",
+]
 
 [build-system]
 requires = ["setuptools", "cython", "numpy", "versioneer"]
 build-backend = "setuptools.build_meta"
 
-[dependency-groups]
-dev = [
-    "pytest>=8.3.5",
-]
-
+[tool.versioneer]
+VCS = "git"
+style = "pep440-pre"
+versionfile_source = "fisher/_version.py"
+versionfile_build = "fisher/_version.py"
+tag_prefix = "v"
