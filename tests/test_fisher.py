@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from fisher import pvalue, pvalue_npy
-from fisher.cfisher import pvalue_population, PValues
+from fisher.cfisher import pvalue_population
 
 
 EPSILON = 1e-10

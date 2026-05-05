@@ -1,8 +1,7 @@
-import numpy as np
 
 import pytest
 
-from fisher.cfisher import pvalue, pvalue_npy
+from fisher.cfisher import pvalue
 
 # Computed by ``fisher.test`` in R 3.2.2 and printed with
 # ``sprintf(".16f")``.

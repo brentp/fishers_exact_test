@@ -59,7 +59,7 @@ def test_speed(f):
 @test_speed
 def test_fisher_speed(func):
     for i in range(N):
-        p = func(160, 40, 60, 404)
+        _ = func(160, 40, 60, 404)
 
 @test_speed
 def test_r_speed():
