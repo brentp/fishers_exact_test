@@ -1,6 +1,6 @@
 [project]
 name = "fisher"
-dynamic = ["version"]
+version = "0.0.0"
 description = "Fast Fisher's Exact Test"
 readme = "README.md"
 license = "BSD-3-Clause"
@@ -15,7 +15,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering",
@@ -39,3 +38,8 @@ style = "pep440-pre"
 versionfile_source = "fisher/_version.py"
 versionfile_build = "fisher/_version.py"
 tag_prefix = "v"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.12",
+]
