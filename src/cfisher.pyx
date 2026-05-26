@@ -78,11 +78,10 @@ cdef class PValues:
         return "PValues(left_tail=%.4g, right_tail=%.4g, two_tail=%.4g)" % \
             (self.left_tail, self.right_tail, self.two_tail)
 
-    # http://docs.cython.org/docs/special_methods.html
-    # < 0 | <= 1 | == 2 | != 3 |  > 4 | >= 5
-    def __richcmp__(PValues self, double other, int op):
-        raise Exception("must compare with one of the attributes"
-                        " not the PValues object")
+    def __lt__(self, other): raise TypeError("must compare with one of the attributes not the PValues object")
+    def __le__(self, other): raise TypeError("must compare with one of the attributes not the PValues object")
+    def __gt__(self, other): raise TypeError("must compare with one of the attributes not the PValues object")
+    def __ge__(self, other): raise TypeError("must compare with one of the attributes not the PValues object")
 
 
 cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):

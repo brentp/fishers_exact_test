@@ -1,9 +1,10 @@
-fisher/*.so
-fisher-egg.info/
+.coverage
+.eggs
+*.pyc
 build/
 dist/
-*.pyc
+fisher-egg.info/
+fisher.egg-info/
+fisher/*.so
 MANIFEST
-
-# Don't track the Cython source files, since they are generated from .pyx files
-src/*.c
+src/cfisher.c

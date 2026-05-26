@@ -1,8 +1,8 @@
 include src/cfisher.pyx
-include README.rst
+include README.md
 include LICENSE
 include versioneer.py
 include fisher/_version.py
 include pyproject.toml
-include tests.py
+recursive-include tests *.py
 
