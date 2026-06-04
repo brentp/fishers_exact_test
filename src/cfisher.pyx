@@ -25,6 +25,7 @@ cdef extern from "math.h":
     double log(double) nogil
     double exp(double) nogil
     double lgamma(double) nogil
+    double HUGE_VAL
 
 # Setup Numpy C-API
 np.import_array()
@@ -68,15 +69,18 @@ cdef class PValues:
     cdef readonly double left_tail
     cdef readonly double right_tail
     cdef readonly double two_tail
+    cdef readonly double odds_ratio
 
-    def __cinit__(self, double left_tail, double right_tail, double two_tail):
+    def __cinit__(self, double left_tail, double right_tail, double two_tail,
+                  double odds_ratio):
         self.left_tail = left_tail
         self.right_tail = right_tail
         self.two_tail = two_tail
+        self.odds_ratio = odds_ratio
 
     def __repr__(self):
-        return "PValues(left_tail=%.4g, right_tail=%.4g, two_tail=%.4g)" % \
-            (self.left_tail, self.right_tail, self.two_tail)
+        return "PValues(left_tail=%.4g, right_tail=%.4g, two_tail=%.4g, odds_ratio=%.4g)" % \
+            (self.left_tail, self.right_tail, self.two_tail, self.odds_ratio)
 
     def __lt__(self, other): raise TypeError("must compare with one of the attributes not the PValues object")
     def __le__(self, other): raise TypeError("must compare with one of the attributes not the PValues object")
@@ -93,8 +97,12 @@ cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
 
     cdef int lm = max(0, n - (N - K))
     cdef int um = min(n, K)
+
+    cdef double denom = <double>a_false * <double>b_true
+    cdef double odds_ratio = HUGE_VAL if denom == 0.0 else (<double>a_true * <double>b_false) / denom
+
     if lm == um:
-        return PValues(1.0, 1.0, 1.0)
+        return PValues(1.0, 1.0, 1.0, odds_ratio)
 
     cdef double epsilon = 1e-6
     cdef double cutoff = hypergeometric_probability(k, n, K, N)
@@ -114,7 +122,8 @@ cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
 
     return PValues(min(left_tail, 1.0),
                    min(right_tail, 1.0),
-                   min(two_tail, 1.0))
+                   min(two_tail, 1.0),
+                   odds_ratio)
 
 
 # k, n = study_true, study_tot,
@@ -134,13 +143,14 @@ def pvalue_npy(
     cdef np.ndarray[np.double_t] lefts = np.zeros(shape, dtype=np.double)
     cdef np.ndarray[np.double_t] rights = np.zeros(shape, dtype=np.double)
     cdef np.ndarray[np.double_t] twos = np.zeros(shape, dtype=np.double)
+    cdef np.ndarray[np.double_t] odds_ratios = np.zeros(shape, dtype=np.double)
 
     cdef int i
-    cdef double l, r, t
     cdef PValues p
     for i in range(shape):
         p = pvalue(a_true[i], a_false[i], b_true[i], b_false[i])
         lefts[i] = p.left_tail
         rights[i] = p.right_tail
         twos[i] = p.two_tail
-    return lefts, rights, twos
+        odds_ratios[i] = p.odds_ratio
+    return lefts, rights, twos, odds_ratios
