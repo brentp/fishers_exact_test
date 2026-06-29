@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import pytest
 
@@ -268,14 +270,20 @@ class TestOddsRatio:
         assert p.odds_ratio == float("inf")
 
     def test_zero_numerator(self):
-        """Zero a_true or b_false should yield 0.0."""
-        p = pvalue(0, 5, 1, 4)
+        """Zero a_true or b_false (with a non-zero denominator) should yield 0.0."""
+        p = pvalue(0, 5, 1, 4)  # a_true=0 → numerator=0, denom=5*1=5
         assert p.odds_ratio == 0.0
-        p = pvalue(5, 0, 0, 4)  # b_false=0 → numerator=0
-        # a_false=0 too, denominator=0 → inf takes precedence
-        # (a_false=0 means denom=0 regardless of b_true)
-        # Actually here a_false=0, so denom=0 → inf
-        assert p.odds_ratio == float("inf")
+        p = pvalue(5, 4, 1, 0)  # b_false=0 → numerator=0, denom=4*1=4
+        assert p.odds_ratio == 0.0
+
+    def test_undefined_zero_over_zero_is_nan(self):
+        """0/0 (e.g. an empty group) is undefined and should be nan, matching scipy."""
+        # Empty study group: numerator and denominator are both 0.
+        p = pvalue(0, 0, 3, 4)
+        assert math.isnan(p.odds_ratio)
+        # Empty column variants are 0/0 too.
+        assert math.isnan(pvalue(0, 5, 0, 4).odds_ratio)
+        assert math.isnan(pvalue(5, 0, 3, 0).odds_ratio)
 
     def test_matches_scipy(self):
         """Cross-check against scipy.stats.fisher_exact for typical tables."""

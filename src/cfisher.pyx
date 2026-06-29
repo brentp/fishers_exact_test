@@ -26,6 +26,7 @@ cdef extern from "math.h":
     double exp(double) nogil
     double lgamma(double) nogil
     double HUGE_VAL
+    double NAN
 
 # Setup Numpy C-API
 np.import_array()
@@ -98,8 +99,13 @@ cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
     cdef int lm = max(0, n - (N - K))
     cdef int um = min(n, K)
 
+    cdef double numer = <double>a_true * <double>b_false
     cdef double denom = <double>a_false * <double>b_true
-    cdef double odds_ratio = HUGE_VAL if denom == 0.0 else (<double>a_true * <double>b_false) / denom
+    cdef double odds_ratio
+    if denom == 0.0:
+        odds_ratio = NAN if numer == 0.0 else HUGE_VAL
+    else:
+        odds_ratio = numer / denom
 
     if lm == um:
         return PValues(1.0, 1.0, 1.0, odds_ratio)
