@@ -38,7 +38,7 @@ dev = [
 ]
 
 [build-system]
-requires = ["setuptools", "cython", "numpy", "versioneer"]
+requires = ["setuptools", "cython", "numpy<2.3", "versioneer"]
 build-backend = "setuptools.build_meta"
 
 [tool.versioneer]
