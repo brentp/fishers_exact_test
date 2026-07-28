@@ -50,6 +50,61 @@ def test_pvalue_against_r(table, expected):
 
 
 # ---------------------------------------------------------------------------
+# Extreme tables: two-tailed accuracy far below the old absolute epsilon
+# ---------------------------------------------------------------------------
+# Regression cases for issues #27 and #47. Both were reported as separate
+# bugs but share one cause: the two-tailed sum used an absolute tolerance
+# (p <= cutoff + 1e-6), so once the observed table's probability fell below
+# that slack every table in the support was counted and the result settled
+# at ~1e-6 regardless of the input. Reference values are scipy's
+# fisher_exact, which agrees with R's fisher.test to all printed digits.
+#
+# Each entry: (2x2 table, two_tail, issue)
+EXTREME_CASES = [
+    ([[50, 1], [257, 375]], 1.2220470363522046e-17, "#47"),
+    ([[22, 0], [0, 102]], 7.175066786244522e-25, "#27"),
+]
+
+# The old absolute slack. A pinned result lands just under it; a computed
+# one for these tables is many orders of magnitude smaller, so assert well
+# clear of it rather than merely below.
+OLD_EPSILON_FLOOR = 1e-6
+
+
+@pytest.mark.parametrize("table,expected,issue", EXTREME_CASES)
+def test_two_tail_extreme_tables(table, expected, issue):
+    """Two-tailed p-values must stay accurate below the old 1e-6 slack."""
+    p = pvalue(table[0][0], table[0][1], table[1][0], table[1][1])
+    # Relative, not absolute: an absolute tolerance is vacuous at 1e-17.
+    assert abs(p.two_tail - expected) / expected < 1e-9
+
+
+@pytest.mark.parametrize("table,expected,issue", EXTREME_CASES)
+def test_two_tail_not_pinned_to_epsilon(table, expected, issue):
+    """Guard the specific failure mode: a result stuck at the tolerance."""
+    p = pvalue(table[0][0], table[0][1], table[1][0], table[1][1])
+    assert p.two_tail < OLD_EPSILON_FLOOR * 1e-3
+
+
+@pytest.mark.parametrize("table,expected,issue", EXTREME_CASES)
+def test_extreme_one_tail_unchanged(table, expected, issue):
+    """The one-tailed sums were always correct; they must stay that way."""
+    p = pvalue(table[0][0], table[0][1], table[1][0], table[1][1])
+    # For these tables the two-tailed mass is the right tail alone.
+    assert abs(p.right_tail - expected) / expected < 1e-9
+
+
+def test_two_tail_extreme_via_npy():
+    """pvalue_npy must carry the same accuracy as the scalar interface."""
+    tables = np.array([t for t, _, _ in EXTREME_CASES], dtype=np.uint32)
+    expected = np.array([e for _, e, _ in EXTREME_CASES])
+    twos = pvalue_npy(
+        tables[:, 0, 0], tables[:, 0, 1], tables[:, 1, 0], tables[:, 1, 1]
+    )[2]
+    np.testing.assert_allclose(twos, expected, rtol=1e-9)
+
+
+# ---------------------------------------------------------------------------
 # P-value mathematical properties
 # ---------------------------------------------------------------------------
 class TestPvalueProperties:
