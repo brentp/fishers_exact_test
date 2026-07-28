@@ -96,7 +96,12 @@ cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
     if lm == um:
         return PValues(1.0, 1.0, 1.0)
 
-    cdef double epsilon = 1e-6
+    # Relative tolerance for "at least as extreme as the observed table".
+    # It must be relative: an absolute slack swamps the comparison once the
+    # observed probability drops below it, admitting the whole support and
+    # pinning the two-tailed p-value at the slack itself. R uses the same
+    # 1 + 1e-7 factor in fisher.test.
+    cdef double epsilon = 1e-7
     cdef double cutoff = hypergeometric_probability(k, n, K, N)
     cdef double left_tail = 0, right_tail = 0, two_tail = 0
     cdef int i
@@ -109,7 +114,7 @@ cpdef PValues pvalue(int a_true, int a_false, int b_true, int b_false):
             if x >= k:
                 right_tail += p
 
-            if p <= cutoff + epsilon:
+            if p <= cutoff * (1 + epsilon):
                 two_tail += p
 
     return PValues(min(left_tail, 1.0),
