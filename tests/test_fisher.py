@@ -287,7 +287,7 @@ class TestOddsRatio:
 
     def test_matches_scipy(self):
         """Cross-check against scipy.stats.fisher_exact for typical tables."""
-        from scipy.stats import fisher_exact
+        fisher_exact = pytest.importorskip("scipy.stats").fisher_exact
         for t, _ in R_VALIDATED_CASES:
             a, b, c, d = t[0][0], t[0][1], t[1][0], t[1][1]
             p = pvalue(a, b, c, d)
