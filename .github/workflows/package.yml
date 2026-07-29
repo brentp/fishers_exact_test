@@ -34,6 +34,7 @@ jobs:
         CIBW_BUILD_VERBOSITY: 2
         CIBW_MANYLINUX_AARCH64_IMAGE: quay.io/pypa/manylinux2014_aarch64:2026.04.24-1
         CIBW_BEFORE_BUILD: pip install cython pytest
+        CIBW_ENVIRONMENT: "PIP_CONSTRAINT=/project/.github/manylinux2014_constraints.txt"
         CIBW_TEST_COMMAND: "pytest --import-mode=importlib {project}/tests/"
         CIBW_TEST_REQUIRES: pytest
       with:
