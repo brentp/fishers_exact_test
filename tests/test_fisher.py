@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import pytest
 
@@ -226,7 +228,7 @@ class TestPvalueNpy:
         expected_rights = np.array([e[1] for _, e in R_VALIDATED_CASES])
         expected_twos = np.array([e[2] for _, e in R_VALIDATED_CASES])
 
-        lefts, rights, twos = pvalue_npy(a, b, c, d)
+        lefts, rights, twos, odds_ratios = pvalue_npy(a, b, c, d)
 
         np.testing.assert_allclose(lefts, expected_lefts, atol=EPSILON)
         np.testing.assert_allclose(rights, expected_rights, atol=EPSILON)
@@ -239,10 +241,11 @@ class TestPvalueNpy:
         b = np.ones(n, dtype=np.uint32) * 2
         c = np.ones(n, dtype=np.uint32) * 3
         d = np.ones(n, dtype=np.uint32) * 4
-        lefts, rights, twos = pvalue_npy(a, b, c, d)
+        lefts, rights, twos, odds_ratios = pvalue_npy(a, b, c, d)
         assert len(lefts) == n
         assert len(rights) == n
         assert len(twos) == n
+        assert len(odds_ratios) == n
 
     def test_single_element(self):
         """Should work with length-1 arrays."""
@@ -250,11 +253,12 @@ class TestPvalueNpy:
         b = np.array([5], dtype=np.uint32)
         c = np.array([29], dtype=np.uint32)
         d = np.array([2], dtype=np.uint32)
-        lefts, rights, twos = pvalue_npy(a, b, c, d)
+        lefts, rights, twos, odds_ratios = pvalue_npy(a, b, c, d)
         p = pvalue(12, 5, 29, 2)
         assert abs(lefts[0] - p.left_tail) < EPSILON
         assert abs(rights[0] - p.right_tail) < EPSILON
         assert abs(twos[0] - p.two_tail) < EPSILON
+        assert abs(odds_ratios[0] - p.odds_ratio) < EPSILON
 
     def test_output_dtype_is_float(self):
         """Output arrays should be float64."""
@@ -262,10 +266,11 @@ class TestPvalueNpy:
         b = np.array([2], dtype=np.uint32)
         c = np.array([3], dtype=np.uint32)
         d = np.array([4], dtype=np.uint32)
-        lefts, rights, twos = pvalue_npy(a, b, c, d)
+        lefts, rights, twos, odds_ratios = pvalue_npy(a, b, c, d)
         assert lefts.dtype == np.float64
         assert rights.dtype == np.float64
         assert twos.dtype == np.float64
+        assert odds_ratios.dtype == np.float64
 
 
 # ---------------------------------------------------------------------------
@@ -301,6 +306,64 @@ class TestPValuesObject:
         assert not (p == pvalue(1, 2, 3, 4))
         assert p != pvalue(1, 2, 3, 4)
         assert p is not None
+
+
+# ---------------------------------------------------------------------------
+# Odds ratio
+# ---------------------------------------------------------------------------
+class TestOddsRatio:
+    def test_basic_formula(self):
+        """odds_ratio = (a_true * b_false) / (a_false * b_true)."""
+        p = pvalue(6, 2, 2, 6)
+        assert abs(p.odds_ratio - 9.0) < EPSILON
+
+    def test_zero_denominator_gives_inf(self):
+        """Zero in a_false or b_true should yield inf, matching scipy."""
+        p = pvalue(5, 0, 1, 4)
+        assert p.odds_ratio == float("inf")
+        p = pvalue(5, 1, 0, 4)
+        assert p.odds_ratio == float("inf")
+
+    def test_zero_numerator(self):
+        """Zero a_true or b_false (with a non-zero denominator) should yield 0.0."""
+        p = pvalue(0, 5, 1, 4)  # a_true=0 → numerator=0, denom=5*1=5
+        assert p.odds_ratio == 0.0
+        p = pvalue(5, 4, 1, 0)  # b_false=0 → numerator=0, denom=4*1=4
+        assert p.odds_ratio == 0.0
+
+    def test_undefined_zero_over_zero_is_nan(self):
+        """0/0 (e.g. an empty group) is undefined and should be nan, matching scipy."""
+        # Empty study group: numerator and denominator are both 0.
+        p = pvalue(0, 0, 3, 4)
+        assert math.isnan(p.odds_ratio)
+        # Empty column variants are 0/0 too.
+        assert math.isnan(pvalue(0, 5, 0, 4).odds_ratio)
+        assert math.isnan(pvalue(5, 0, 3, 0).odds_ratio)
+
+    def test_matches_scipy(self):
+        """Cross-check against scipy.stats.fisher_exact for typical tables."""
+        fisher_exact = pytest.importorskip("scipy.stats").fisher_exact
+        for t, _ in R_VALIDATED_CASES:
+            a, b, c, d = t[0][0], t[0][1], t[1][0], t[1][1]
+            p = pvalue(a, b, c, d)
+            or_scipy, _ = fisher_exact([[a, b], [c, d]])
+            if np.isinf(p.odds_ratio) or np.isinf(or_scipy):
+                assert np.isinf(p.odds_ratio) and np.isinf(or_scipy), (t, p.odds_ratio, or_scipy)
+            else:
+                assert abs(p.odds_ratio - or_scipy) < 1e-6, (t, p.odds_ratio, or_scipy)
+
+    def test_npy_odds_ratio_matches_scalar(self):
+        """pvalue_npy odds_ratios must match scalar pvalue.odds_ratio."""
+        tables = np.array([t for t, _ in R_VALIDATED_CASES], dtype=np.uint32)
+        a, b = tables[:, 0, 0], tables[:, 0, 1]
+        c, d = tables[:, 1, 0], tables[:, 1, 1]
+        _, _, _, odds_ratios = pvalue_npy(a, b, c, d)
+        for i, (t, _) in enumerate(R_VALIDATED_CASES):
+            p = pvalue(t[0][0], t[0][1], t[1][0], t[1][1])
+            if np.isinf(p.odds_ratio):
+                assert np.isinf(odds_ratios[i])
+            else:
+                assert abs(odds_ratios[i] - p.odds_ratio) < EPSILON
 
 
 # ---------------------------------------------------------------------------

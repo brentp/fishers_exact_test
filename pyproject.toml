@@ -52,4 +52,5 @@ tag_prefix = "v"
 dev = [
     "pytest>=8.3.5",
     "pytest-cov>=5.0.0",
+    "scipy>=1.10.1",
 ]
